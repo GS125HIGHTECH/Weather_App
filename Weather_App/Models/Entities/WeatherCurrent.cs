@@ -11,7 +11,5 @@ namespace Weather_App.Models.Entities
         public virtual Location? Location { get; set; }
         public long CurrentId { get; set; }
         public virtual Current? Current { get; set; }
-        public long ConditionId { get; set; }
-        public virtual Condition? Condition { get; set; }
     }
 }

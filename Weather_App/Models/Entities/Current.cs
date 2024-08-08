@@ -32,5 +32,7 @@ namespace Weather_App.Models.Entities
         public float? UVIndex { get; set; }
         public float? GustMPH { get; set; }
         public float? GustKPH { get; set; }
+        public long ConditionId { get; set; }
+        public virtual Condition? Condition { get; set; }
     }
 }
