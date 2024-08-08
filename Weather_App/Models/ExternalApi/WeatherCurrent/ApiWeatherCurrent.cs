@@ -2,7 +2,7 @@
 
 namespace Weather_App.Models.ExternalApi.WeatherCurrent
 {
-    public class ApiWeatherForecast
+    public class ApiWeatherRealtime
     {
         [JsonProperty("location")]
         public ApiWeatherLocation? Location { get; set; }
