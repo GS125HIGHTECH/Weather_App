@@ -6,6 +6,20 @@ namespace Weather_App.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+        public DbSet<WeatherForecast>? WeatherForecast { get; set; }
+        public DbSet<WeatherCurrent>? WeatherCurrent { get; set; }
+        public DbSet<Location>? Location { get; set; }
+
+        public DbSet<Current>? Current { get; set; }
+
+        public DbSet<Condition>? Condition { get; set; }
+
+        public DbSet<Astro>? Astro { get; set; }
+
+        public DbSet<ForecastDay>? ForecastDay { get; set; }
+
+        public DbSet<ForecastHour>? ForecastHour { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
