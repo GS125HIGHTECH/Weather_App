@@ -21,6 +21,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddHttpClient();
+builder.AddDependencies();
 
 builder.Services.AddControllersWithViews();
 
