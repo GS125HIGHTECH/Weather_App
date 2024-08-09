@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Betort.Models.Entities.Shared.EntityBase;
+namespace Weather_App.Models.Entities.Shared.EntityBase;
 
 public abstract class EntityBase<TPrimaryKey> : IEntityBase<TPrimaryKey>
 {

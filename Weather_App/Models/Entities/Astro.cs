@@ -1,4 +1,4 @@
-﻿using Betort.Models.Entities.Shared.EntityBase;
+﻿using Weather_App.Models.Entities.Shared.EntityBase;
 
 namespace Weather_App.Models.Entities
 {
