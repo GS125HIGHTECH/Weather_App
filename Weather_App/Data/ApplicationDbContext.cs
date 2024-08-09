@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Weather_App.Models.Entities;
+using Weather_App.Models.Entities.Management;
 
 namespace Weather_App.Data
 {
@@ -19,6 +20,8 @@ namespace Weather_App.Data
         public DbSet<ForecastDay>? ForecastDay { get; set; }
 
         public DbSet<ForecastHour>? ForecastHour { get; set; }
+
+        public DbSet<SyncRequestInfo>? SyncRequestInfo { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
