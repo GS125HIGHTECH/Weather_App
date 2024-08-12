@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Weather_App.Data;
 
@@ -11,9 +12,10 @@ using Weather_App.Data;
 namespace Weather_App.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809114220_SyncRequestInfo")]
+    partial class SyncRequestInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,7 +326,7 @@ namespace Weather_App.Data.Migrations
                     b.Property<float?>("Humidity")
                         .HasColumnType("real");
 
-                    b.Property<bool?>("IsDay")
+                    b.Property<bool>("IsDay")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastUpdated")
@@ -720,7 +722,9 @@ namespace Weather_App.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.HasIndex("CurrentId")
                         .IsUnique();
@@ -750,7 +754,9 @@ namespace Weather_App.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.HasIndex("CurrentId")
                         .IsUnique();
@@ -872,8 +878,8 @@ namespace Weather_App.Data.Migrations
             modelBuilder.Entity("Weather_App.Models.Entities.WeatherCurrent", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("Weather_App.Models.Entities.WeatherCurrent", "AccountId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Weather_App.Models.Entities.Current", "Current")
@@ -898,8 +904,8 @@ namespace Weather_App.Data.Migrations
             modelBuilder.Entity("Weather_App.Models.Entities.WeatherForecast", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("Weather_App.Models.Entities.WeatherForecast", "AccountId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Weather_App.Models.Entities.Current", "Current")

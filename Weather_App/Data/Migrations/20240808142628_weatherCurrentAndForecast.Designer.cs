@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Weather_App.Data;
 
@@ -11,9 +12,10 @@ using Weather_App.Data;
 namespace Weather_App.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240808142628_weatherCurrentAndForecast")]
+    partial class weatherCurrentAndForecast
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,7 +326,7 @@ namespace Weather_App.Data.Migrations
                     b.Property<float?>("Humidity")
                         .HasColumnType("real");
 
-                    b.Property<bool?>("IsDay")
+                    b.Property<bool>("IsDay")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastUpdated")
@@ -636,71 +638,6 @@ namespace Weather_App.Data.Migrations
                     b.ToTable("Location");
                 });
 
-            modelBuilder.Entity("Weather_App.Models.Entities.Management.SyncRequestInfo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("AdditionalEntities")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("AdditionalInformations")
-                        .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)");
-
-                    b.Property<string>("ApiName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("BaseAddress")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("BaseEntity")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2500)
-                        .HasColumnType("nvarchar(2500)");
-
-                    b.Property<string>("EndPoint")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<long>("ExecutionTime")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("GlobalCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Parameters")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("ProcessingDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Reconnections")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime>("When")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SyncRequestInfo");
-                });
-
             modelBuilder.Entity("Weather_App.Models.Entities.WeatherCurrent", b =>
                 {
                     b.Property<long>("Id")
@@ -720,7 +657,9 @@ namespace Weather_App.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.HasIndex("CurrentId")
                         .IsUnique();
@@ -750,7 +689,9 @@ namespace Weather_App.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
                     b.HasIndex("CurrentId")
                         .IsUnique();
@@ -872,8 +813,8 @@ namespace Weather_App.Data.Migrations
             modelBuilder.Entity("Weather_App.Models.Entities.WeatherCurrent", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("Weather_App.Models.Entities.WeatherCurrent", "AccountId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Weather_App.Models.Entities.Current", "Current")
@@ -898,8 +839,8 @@ namespace Weather_App.Data.Migrations
             modelBuilder.Entity("Weather_App.Models.Entities.WeatherForecast", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("Weather_App.Models.Entities.WeatherForecast", "AccountId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Weather_App.Models.Entities.Current", "Current")
