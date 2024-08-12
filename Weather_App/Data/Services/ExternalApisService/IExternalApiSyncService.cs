@@ -4,5 +4,5 @@ namespace Weather_App.Data.Services.ExternalApisService;
 public interface IExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPointEntity>
     where TEntityBase : class, IEntityBase<TPrimaryKey>, new()
 {
-    Task<(IEnumerable<TEntityBase> Results, int Pages)> BeginRequest(string? parameters);
+    Task<IEnumerable<TEntityBase>> BeginRequest(string? parameters);
 }

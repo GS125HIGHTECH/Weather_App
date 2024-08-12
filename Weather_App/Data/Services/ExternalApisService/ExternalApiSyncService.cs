@@ -1,10 +1,8 @@
-﻿using Weather_App.Exceptions;
-using Weather_App.Models.Dto;
+﻿using Weather_App.Models.Dto;
 using Weather_App.Data.Repositories.Base;
 using Weather_App.Data.Repositories.Custom;
 using Weather_App.Models.Entities.Management;
 using Weather_App.Models.Entities.Shared.EntityBase;
-using Weather_App.Models.Shared;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
@@ -13,11 +11,12 @@ namespace Weather_App.Data.Services.ExternalApisService;
 public abstract class ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPointEntity>
     where TEntityBase : class, IEntityBase<TPrimaryKey>, new()
 {
+    public static readonly string CreatingMap = "CREATE";
     public static readonly string UpdatingMap = "UPDATE";
 
-    private int ReconnectionAttempts = 5;
     private readonly IConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPointEntity>> _logger;
     protected readonly ICustomRepository CustomRepository;
     protected readonly IEntityBaseRepository<TPrimaryKey, TEntityBase> EntityBaseRepository;
 
@@ -29,18 +28,20 @@ public abstract class ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPoint
         ICustomRepository customRepository,
         IConfiguration configuration,
         IHttpClientFactory httpClientFactory,
+        ILogger<ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPointEntity>> logger,
         IEntityBaseRepository<TPrimaryKey, TEntityBase> entityBaseRepository
         ) 
     {
         CustomRepository = customRepository;
         _configuration = configuration;
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
         EntityBaseRepository = entityBaseRepository;    
     }
 
 
-    protected async Task<(IEnumerable<TEntityBase> Results, int Pages)> BeginRequest<TApiResult>(string parameters,
-        Func<ExternalApiRootObject<TApiResult>, Task<IEnumerable<TEntityBase>>>? additionalOperation = null)
+    protected async Task<IEnumerable<TEntityBase>> BeginRequest<TApiResult>(string parameters,
+        Func<TApiResult, Task<IEnumerable<TEntityBase>>>? additionalOperation = null)
         where TApiResult : class, new()
     {
         var watch = Stopwatch.StartNew();
@@ -59,18 +60,13 @@ public abstract class ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPoint
             RequestInfo.Parameters = parameters;
 
             var client = _httpClientFactory.CreateClient(apiName);
-            var response = await client.GetAsync(endPointName + parameters);
+            var response = await client.GetAsync(endPointName + "?q=" + parameters);
             var readedString = await response.Content.ReadAsStringAsync();
 
-            var result = CatchErrors(JsonConvert.DeserializeObject<ExternalApiRootObject<TApiResult>>(readedString));
-
-            var pages = int.Parse(result.Paging["total"].ToString());
-
+            var result = JsonConvert.DeserializeObject<TApiResult>(readedString);
             IEnumerable<TEntityBase> entities;
             if (additionalOperation != null)
                 entities = await additionalOperation(result);
-            else if (endPointEntityName == typeof(TApiResult).Name)
-                entities = (IEnumerable<TEntityBase>)  result.Response;
             else
                 throw new InvalidOperationException($"Unsupported api entity convertion: '{nameof(TEntityBase)} -> {typeof(TEntityBase)} -> {endPointEntityName} | {nameof(TApiResult)} -> {typeof(TApiResult)}'.");
 
@@ -83,7 +79,7 @@ public abstract class ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPoint
             watch.Stop();
             RequestInfo.ExecutionTime = watch.ElapsedMilliseconds;
 
-            return (ret, pages);
+            return ret;
         }
         catch (Exception ex)
         {
@@ -129,23 +125,6 @@ public abstract class ExternalApiSyncService<TPrimaryKey, TEntityBase, TEndPoint
 
         RequestInfo.ProcessingDetails += $@"
         ==== API END {mapType}: {entityName} {updateMsgPart}";
-    }
-
-    private ExternalApiRootObject<TApiResult> CatchErrors<TApiResult>(ExternalApiRootObject<TApiResult> result)
-        where TApiResult : class, new()
-    {
-        var errors = result.Errors;
-        if (errors?.Count > 0)
-        {
-            if (errors.ContainsKey("rateLimit"))
-                throw new ExternalApiConnectionException(JsonConvert.SerializeObject(errors));
-            else if (errors.ContainsKey("requests"))
-                throw new ExternalApiConnectionException(JsonConvert.SerializeObject(errors));
-            else
-                throw new ExternalApiException(JsonConvert.SerializeObject(errors));
-        }
-
-        return result;
     }
 
     protected async Task SaveRequestInformation()
