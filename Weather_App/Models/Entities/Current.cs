@@ -8,7 +8,7 @@ namespace Weather_App.Models.Entities
         public DateTime? LastUpdated { get; set; }
         public float? TemperatureCelsius { get; set; }
         public float? TemperatureFahrenheit { get; set; }
-        public bool IsDay { get; set; }
+        public bool? IsDay { get; set; }
         public float? WindMPH { get; set; }
         public float? WindKPH { get; set; }
         public float? WindDegree { get; set; }

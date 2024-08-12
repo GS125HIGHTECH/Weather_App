@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Weather_App.Models.Entities;
 using Weather_App.Models.Entities.Management;
@@ -45,9 +46,9 @@ namespace Weather_App.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<WeatherCurrent>()
-                .HasOne(w => w.Account)
-                .WithOne()
-                .HasForeignKey<WeatherCurrent>(w => w.AccountId)
+                .HasOne<IdentityUser>(w => w.Account)
+                .WithMany()
+                .HasForeignKey(w => w.AccountId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<WeatherForecast>()
@@ -63,9 +64,9 @@ namespace Weather_App.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<WeatherForecast>()
-                .HasOne(w => w.Account)
-                .WithOne()
-                .HasForeignKey<WeatherForecast>(w => w.AccountId)
+                .HasOne<IdentityUser>(w => w.Account)
+                .WithMany()
+                .HasForeignKey(w => w.AccountId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<WeatherForecast>()

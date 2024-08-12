@@ -13,7 +13,7 @@ namespace Weather_App.Models.ExternalApi
         [JsonProperty("temp_f")]
         public float? TemperatureFahrenheit { get; set; }
         [JsonProperty("is_day")]
-        public bool IsDay { get; set; }
+        public bool? IsDay { get; set; }
         [JsonProperty("condition")]
         public ApiWeatherCondition? Condition { get; set; }
         [JsonProperty("wind_mph")]
