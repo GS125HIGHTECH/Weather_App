@@ -5,4 +5,5 @@ namespace Weather_App.Data.Services.WeatherForecastService;
 public interface IWeatherForecastService
 {
     Task<IEnumerable<WeatherForecast>> GetWeatherForecasts();
+    Task<IEnumerable<WeatherForecast>> GetWeatherForecasts(string accountId);
 }

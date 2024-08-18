@@ -21,4 +21,14 @@ public class WeatherForecastService : IWeatherForecastService
         .Include(w => w.Current).ThenInclude(w => w.Condition)
         .ToListAsync();
     }
+
+    public async Task<IEnumerable<WeatherForecast>> GetWeatherForecasts(string accountId)
+    {
+        return await _context.WeatherForecast
+        .Include(w => w.Location)
+        .Include(w => w.Account).Where(a => a.AccountId == accountId)
+        .Include(w => w.ForecastDays).ThenInclude(w => w.ForecastHours).ThenInclude(w => w.Condition)
+        .Include(w => w.Current).ThenInclude(w => w.Condition)
+        .ToListAsync();
+    }
 }

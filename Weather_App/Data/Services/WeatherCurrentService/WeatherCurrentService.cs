@@ -20,4 +20,13 @@ public class WeatherCurrentService : IWeatherCurrentService
         .Include(w => w.Account)
         .ToListAsync();
     }
+
+    public async Task<IEnumerable<WeatherCurrent>> GetWeatherCurrents(string accountId)
+    {
+        return await _context.WeatherCurrent
+        .Include(w => w.Current).ThenInclude(w => w.Condition)
+        .Include(w => w.Location)
+        .Include(w => w.Account).Where(a => a.AccountId == accountId)
+        .ToListAsync();
+    }
 }
