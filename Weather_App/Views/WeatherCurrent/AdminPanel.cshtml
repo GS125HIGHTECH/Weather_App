@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Weather_App.Models.Entities.WeatherCurrent>
+
+@{
+    ViewData["Title"] = "WeatherCurrents";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Local time</th>
+            <th>Current Condition</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Account?.Email</td>
+                <td>@item.Location?.Name @item.Location?.Region</td>
+                <td>@item.Location?.Localtime</td>
+                <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
+            </tr>
+        }
+    </tbody>
+</table>
