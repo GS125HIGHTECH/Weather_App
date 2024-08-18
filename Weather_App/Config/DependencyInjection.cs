@@ -4,6 +4,8 @@ using Weather_App.Data.Repositories.Custom;
 using Weather_App.Data.Repositories.Dto;
 using Weather_App.Data.Services.ExternalApisService;
 using Weather_App.Data.Services.ExternalApisService.SyncEntities;
+using Weather_App.Data.Services.WeatherCurrentService;
+using Weather_App.Data.Services.WeatherForecastService;
 using Weather_App.Models.Dto;
 using Weather_App.Models.Entities;
 
@@ -24,6 +26,10 @@ namespace Weather_App.Config
                     client.DefaultRequestHeaders.Add("x-rapidapi-host", config.Address);
                 });
             }
+
+            // ==== services ====
+            builder.Services.AddScoped<IWeatherCurrentService, WeatherCurrentService>();
+            builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
             // ==== repositories ====
             builder.Services.AddScoped(typeof(IEntityBaseRepository<,>), typeof(EntityBaseRepository<,>));

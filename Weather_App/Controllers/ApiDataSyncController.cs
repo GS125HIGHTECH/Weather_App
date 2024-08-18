@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
 using Weather_App.Consts;
 using Weather_App.Data.Services.ExternalApisService;
 using Weather_App.Models.Entities;
