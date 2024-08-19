@@ -4,41 +4,54 @@
     ViewData["Title"] = "WeatherForecasts";
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Location</th>
-            <th>Current Condition</th>
-            <th>Forecast</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Account?.Email</td>
-                <td>@item.Location?.Name @item.Location?.Region</td>
-                <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
-                <td>
-                    <ul>
-                        @if (item.ForecastDays != null)
-                        @foreach (var day in item.ForecastDays)
-                        {
-                            if (day.ForecastHours != null)
-                            {
-                                <li>@day.Date: @day.ForecastHours.Count hours forecasted</li>
-                                <ul>
-                                    @foreach (var hour in day.ForecastHours)
-                                    {
-                                        <li>@hour.Time.Value.Hour:00 @hour.TemperatureCelsius&deg;C, @hour.Condition.Text</li>
-                                    }
-                                </ul>
-                            }
-                        }
-                    </ul>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container">
+    @foreach (var locationGroup in Model.GroupBy(w => w.Location?.Name))
+    {
+        <div>
+            <h2 class="user-select-none" role="button" data-bs-toggle="collapse" href="#location-@locationGroup.Key.Replace(" ", "-")">
+                @locationGroup.Key
+            </h2>
+            <div id="location-@locationGroup.Key.Replace(" ", "-")" class="collapse show">
+                @foreach (var weather in locationGroup)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header user-select-none" role="button" data-bs-toggle="collapse" data-bs-target="#weather-@weather.Id">
+                            <p>@weather.Location?.Localtime.Value.ToShortDateString()<span class="px-2"></span>@weather.Location?.Localtime.Value.ToShortTimeString()</p>
+                            <p><img src="@weather.Current?.Condition?.Icon" alt="@weather.Current?.Condition?.Text" /> @weather.Current?.TemperatureCelsius&deg;C</p>
+                        </div>
+                        <div id="weather-@weather.Id" class="collapse">
+                            <div class="card-body">
+                                <p>Country: @weather.Location?.Country</p>
+                                <p>Temperature: @weather.Current?.TemperatureCelsius&deg;C @weather.Current?.TemperatureFahrenheit&deg;F</p>
+                                <p>Feels Like: @weather.Current?.FeelsLikeTemperatureCelsius&deg;C @weather.Current?.FeelsLikeTemperatureFahrenheit&deg;F</p>
+                                <p>Wind Speed: @weather.Current?.WindKPH km/h @weather.Current?.WindMPH mph</p>
+                                <p>Humidity: @weather.Current?.Humidity%</p>
+                                <p>UV Index: @weather.Current?.UVIndex</p>
+                                <p>Pressure: @weather.Current?.PressureMilibars hPa</p>
+                                <p>Visibility: @weather.Current?.VisibilityKilometers km</p>
+                                @foreach (var day in weather.ForecastDays)
+                                {
+                                    <div class="user-select-none">
+                                        <h5 class="pt-3">@day.Date.Value.ToShortDateString()</h5>
+                                        <div class="d-flex overflow-auto">
+                                            @foreach (var hour in day.ForecastHours)
+                                            {
+                                                <div class="card me-2 text-center" style="min-width: 100px;">
+                                                    <div class="card-body">
+                                                        <p>@hour.Time.Value.ToShortTimeString()</p>
+                                                        <img src="@hour.Condition?.Icon" alt="@hour.Condition?.Text" class="img-fluid" />
+                                                        <p>@hour.TemperatureCelsius&deg;C</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
