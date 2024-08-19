@@ -21,6 +21,7 @@ public class WeatherForecastController : Controller
         _httpContextAccessor = httpContextAccessor;
     }
 
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
