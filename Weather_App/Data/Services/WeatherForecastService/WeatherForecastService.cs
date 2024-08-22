@@ -19,6 +19,7 @@ public class WeatherForecastService : IWeatherForecastService
         .Include(w => w.Account)
         .Include(w => w.ForecastDays).ThenInclude(w => w.ForecastHours).ThenInclude(w => w.Condition)
         .Include(w => w.Current).ThenInclude(w => w.Condition)
+        .OrderByDescending(w => w.Id)
         .ToListAsync();
     }
 
@@ -29,6 +30,7 @@ public class WeatherForecastService : IWeatherForecastService
         .Include(w => w.Account).Where(a => a.AccountId == accountId)
         .Include(w => w.ForecastDays).ThenInclude(w => w.ForecastHours).ThenInclude(w => w.Condition)
         .Include(w => w.Current).ThenInclude(w => w.Condition)
+        .OrderByDescending(w => w.Id)
         .ToListAsync();
     }
 }

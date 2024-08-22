@@ -9,6 +9,7 @@
         <tr>
             <th>Email</th>
             <th>Location</th>
+            <th>Country</th>
             <th>Current Condition</th>
             <th>Forecast</th>
         </tr>
@@ -18,7 +19,8 @@
         {
             <tr>
                 <td>@item.Account?.Email</td>
-                <td>@item.Location?.Name @item.Location?.Region</td>
+                <td>@item.Location?.Name</td>
+                <td>@item.Location?.Country</td>
                 <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
                 <td>
                     <ul>
