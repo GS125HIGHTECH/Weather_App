@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Weather_App.Models.Entities.WeatherForecast>
+
+@{
+    ViewData["Title"] = "WeatherForecasts";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Country</th>
+            <th>Current Condition</th>
+            <th>Forecast</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Account?.Email</td>
+                <td>@item.Location?.Name</td>
+                <td>@item.Location?.Country</td>
+                <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
+                <td>
+                    <ul>
+                        @if (item.ForecastDays != null)
+                        @foreach (var day in item.ForecastDays)
+                        {
+                            <li>@day.Date.Value.Date.ToShortDateString()</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

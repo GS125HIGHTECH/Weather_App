@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 using Weather_App.Data;
 using Weather_App.Config;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var cultureInfo = new CultureInfo("en-US");
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
