@@ -27,10 +27,7 @@
                         @if (item.ForecastDays != null)
                         @foreach (var day in item.ForecastDays)
                         {
-                            if (day.ForecastHours != null)
-                            {
-                                <li>@day.Date.Value.Date.ToShortDateString(): @day.ForecastHours.Count hours forecasted</li>
-                            }
+                            <li>@day.Date.Value.Date.ToShortDateString()</li>
                         }
                     </ul>
                 </td>

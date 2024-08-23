@@ -17,7 +17,7 @@ public class WeatherForecastService : IWeatherForecastService
         return await _context.WeatherForecast
         .Include(w => w.Location)
         .Include(w => w.Account)
-        .Include(w => w.ForecastDays).ThenInclude(w => w.ForecastHours).ThenInclude(w => w.Condition)
+        .Include(w => w.ForecastDays)
         .Include(w => w.Current).ThenInclude(w => w.Condition)
         .OrderByDescending(w => w.Id)
         .ToListAsync();
