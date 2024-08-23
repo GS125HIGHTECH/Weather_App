@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Weather_App.Models.Entities.WeatherForecast>
+
+@{
+    ViewData["Title"] = "WeatherForecasts";
+}
+
+<div class="container">
+    @foreach (var locationGroup in Model.GroupBy(w => w.Location?.Name))
+    {
+        <div>
+            <h2 class="user-select-none" role="button" data-bs-toggle="collapse" href="#location-@locationGroup.Key.Replace(" ", "-")">
+                @locationGroup.Key
+            </h2>
+            <div id="location-@locationGroup.Key.Replace(" ", "-")" class="collapse show">
+                @foreach (var weather in locationGroup)
+                {
+                    <div class="card mb-3">
+                        <div class="card-header user-select-none" role="button" data-bs-toggle="collapse" data-bs-target="#weather-@weather.Id">
+                            <p>@weather.Location?.Localtime.Value.ToShortDateString()<span class="px-2"></span>@weather.Location?.Localtime.Value.ToShortTimeString()</p>
+                            <p><img src="@weather.Current?.Condition?.Icon" alt="@weather.Current?.Condition?.Text" /> @weather.Current?.TemperatureCelsius&deg;C</p>
+                            <p class="mb-0">UV Index: @weather.Current?.UVIndex<span class="px-2"></span>Humidity: @weather.Current?.Humidity%</p>
+                        </div>
+                        <div id="weather-@weather.Id" class="collapse">
+                            <div class="card-body">
+                                <p>Country: @weather.Location?.Country</p>
+                                <p>Temperature: @weather.Current?.TemperatureCelsius&deg;C<span class="px-1"></span>@weather.Current?.TemperatureFahrenheit&deg;F<span class="px-2"></span>Feels Like: @weather.Current?.FeelsLikeTemperatureCelsius&deg;C<span class="px-1"></span>@weather.Current?.FeelsLikeTemperatureFahrenheit&deg;F</p>
+                                <p>Wind Speed: @weather.Current?.WindKPH km/h<span class="px-1"></span>@weather.Current?.WindMPH mph</p>
+                                <p>Pressure: @weather.Current?.PressureMilibars hPa</p>
+                                <p>Visibility: @weather.Current?.VisibilityKilometers km</p>
+                                <div class="user-select-none">
+                                    <h5 class="pt-3 current-date">@weather.ForecastDays.FirstOrDefault()?.Date.Value.ToShortDateString()</h5>
+                                    <div class="d-flex overflow-auto forecast-container" style="scroll-snap-type: x mandatory;">
+                                        @foreach (var day in weather.ForecastDays)
+                                        {
+                                            foreach (var hour in day.ForecastHours)
+                                            {
+                                                <div class="card me-2 text-center forecast-hour" data-date="@day.Date.Value.ToShortDateString()" style="min-width: 90px; scroll-snap-align: start;">
+                                                    <div class="card-body">
+                                                        <p>@hour.Time.Value.ToShortTimeString()</p>
+                                                        <img src="@hour.Condition?.Icon" alt="@hour.Condition?.Text" class="img-fluid mb-2" />
+                                                        <p class="mb-0">@hour.TemperatureCelsius&deg;C</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/weatherForecast/index.js"></script>
+}

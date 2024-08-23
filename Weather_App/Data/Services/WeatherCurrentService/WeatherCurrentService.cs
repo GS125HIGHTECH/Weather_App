@@ -18,6 +18,17 @@ public class WeatherCurrentService : IWeatherCurrentService
         .Include(w => w.Current).ThenInclude(w => w.Condition)
         .Include(w => w.Location)
         .Include(w => w.Account)
+        .OrderByDescending(w => w.Id)
+        .ToListAsync();
+    }
+
+    public async Task<IEnumerable<WeatherCurrent>> GetWeatherCurrents(string accountId)
+    {
+        return await _context.WeatherCurrent
+        .Include(w => w.Current).ThenInclude(w => w.Condition)
+        .Include(w => w.Location)
+        .Include(w => w.Account).Where(a => a.AccountId == accountId)
+        .OrderByDescending(w => w.Id)
         .ToListAsync();
     }
 }

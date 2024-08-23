@@ -2,31 +2,34 @@
 using System.Diagnostics;
 using Weather_App.Models;
 
-namespace Weather_App.Controllers
+namespace Weather_App.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ILogger<HomeController> _logger;
+    private readonly IConfiguration _config;
+
+    public HomeController(ILogger<HomeController> logger, IConfiguration config)
     {
-        private readonly ILogger<HomeController> _logger;
+        _logger = logger;
+        _config = config;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+    public IActionResult Index()
+    {
+        var googleMapsApiKey = _config["GoogleMaps:ApiKey"];
+        ViewData["GoogleMapsApiKey"] = googleMapsApiKey;
+        return View();
+    }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
