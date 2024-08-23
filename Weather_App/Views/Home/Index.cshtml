@@ -2,7 +2,27 @@
     ViewData["Title"] = "Home Page";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/home/index.css">
+}
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Weather App</h1>
+    <div class="justify-content-center d-flex p-4">
+        <input id="autocomplete" placeholder="Enter address" type="text" class="p-1 w-50">
+        <form id="weatherForm" method="post" action="/ApiDataSync/SyncWeatherForecast">
+            <input type="hidden" name="param" id="paramField">
+            <button type="button" class="btn btn-info ms-1" onclick="submitForm()">Check weather</button>
+        </form>
+    </div>
+    <div id="map"></div>
+    <div id="info">
+        <input id="lat" type="hidden" />
+        <input id="lng" type="hidden" />
+    </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/home/index.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@ViewData["GoogleMapsApiKey"]&libraries=places&callback=initMap" async defer></script>
+}
