@@ -35,5 +35,5 @@ public class ApiDataSyncController : Controller
     }
 
     private ActionResult RedirectToInfoIndex() =>
-        RedirectToAction("Index", "Home");
+        RedirectToAction("Index", ControllerContext.ActionDescriptor.ActionName.Replace("Sync", ""));
 }
