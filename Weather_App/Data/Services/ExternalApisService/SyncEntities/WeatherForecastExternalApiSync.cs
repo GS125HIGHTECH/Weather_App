@@ -61,7 +61,7 @@ IExternalApiSyncService<long, WeatherForecast, WeatherForecast>
         var createCounts = new Dictionary<string, int> { ["creatingWeatherForecasts"] = 0, ["creatingForecastDays"] = 0 };
         var createdWeatherForecasts = new List<WeatherForecast>();
         
-        if (apiResult != null && apiResult.Location != null & apiResult.Current?.Condition != null & apiResult.Forecast?.ForecastDays != null)
+        if (apiResult != null && apiResult.Location != null && apiResult.Current?.Condition != null && apiResult.Forecast?.ForecastDays != null)
         {
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
             if (user != null)

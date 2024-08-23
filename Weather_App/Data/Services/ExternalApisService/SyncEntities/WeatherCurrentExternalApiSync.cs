@@ -62,7 +62,7 @@ public class WeatherCurrentExternalApiSync : ExternalApiSyncService<long, Weathe
         var createCounts = new Dictionary<string, int> { ["creatingWeatherCurrents"] = 0 };
         var createdWeatherCurrents = new List<WeatherCurrent>();
 
-        if (apiResult != null)
+        if (apiResult != null && apiResult.Location != null && apiResult.Current?.Condition != null)
         {
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
             if (user != null)
@@ -125,12 +125,17 @@ public class WeatherCurrentExternalApiSync : ExternalApiSyncService<long, Weathe
                 createdWeatherCurrents.Add(creatingWeatherCurrent);
                 createCounts["creatingWeatherCurrents"]++;
             }
-        }
 
-        await CustomRepository.CreateOrUpdateMultiAsync<long, WeatherCurrent>(createdWeatherCurrents);
+            await CustomRepository.CreateOrUpdateMultiAsync<long, WeatherCurrent>(createdWeatherCurrents);
 
-        RequestInfo.Description += $@"
+            RequestInfo.Description += $@"
             Created WeatherCurrents: {createCounts["creatingWeatherCurrents"]}.";
+        }
+        else
+        {
+            RequestInfo.Status = Statuses.Error;
+            RequestInfo.Description += "Error: API response is null. ";
+        }
 
         return ret;
     }
