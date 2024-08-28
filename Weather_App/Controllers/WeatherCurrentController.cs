@@ -6,6 +6,7 @@ using Weather_App.Data.Services.WeatherCurrentService;
 
 namespace Weather_App.Controllers;
 
+[Authorize(Roles = Roles.Administrator)]
 public class WeatherCurrentController : Controller
 {
     private readonly IWeatherCurrentService _service;
@@ -21,7 +22,6 @@ public class WeatherCurrentController : Controller
         _httpContextAccessor = httpContextAccessor;
     }
 
-    [Authorize]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext?.User);
@@ -31,7 +31,6 @@ public class WeatherCurrentController : Controller
         return View(weatherForecasts);
     }
 
-    [Authorize(Roles = Roles.Administrator)]
     public async Task<IActionResult> AdminPanel()
     {
         var weatherForecasts = await _service.GetWeatherCurrents();
