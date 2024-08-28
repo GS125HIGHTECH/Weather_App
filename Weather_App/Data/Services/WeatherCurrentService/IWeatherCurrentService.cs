@@ -1,9 +1,9 @@
-﻿using Weather_App.Models.Entities;
+﻿using Weather_App.Models.Dto.WeatherCurrent;
 
 namespace Weather_App.Data.Services.WeatherCurrentService;
 
 public interface IWeatherCurrentService
 {
-    Task<IEnumerable<WeatherCurrent>> GetWeatherCurrents();
-    Task<IEnumerable<WeatherCurrent>> GetWeatherCurrents(string accountId);
+    Task<IEnumerable<WeatherCurrentDto>> GetWeatherCurrents();
+    Task<IEnumerable<WeatherCurrentDto>> GetWeatherCurrents(string accountId);
 }
