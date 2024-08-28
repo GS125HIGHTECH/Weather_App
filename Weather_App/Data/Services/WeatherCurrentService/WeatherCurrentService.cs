@@ -19,6 +19,7 @@ public class WeatherCurrentService : IWeatherCurrentService
         .Include(w => w.Location)
         .Include(w => w.Account)
         .OrderByDescending(w => w.Id)
+        .AsNoTracking()
         .ToListAsync();
     }
 
@@ -29,6 +30,7 @@ public class WeatherCurrentService : IWeatherCurrentService
         .Include(w => w.Location)
         .Include(w => w.Account).Where(a => a.AccountId == accountId)
         .OrderByDescending(w => w.Id)
+        .AsNoTracking()
         .ToListAsync();
     }
 }
