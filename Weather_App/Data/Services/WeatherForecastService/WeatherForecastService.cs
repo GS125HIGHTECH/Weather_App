@@ -1,36 +1,38 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Weather_App.Models.Entities;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using Weather_App.Models.Dto.WeatherCurrent;
+using Weather_App.Models.Dto.WeatherForecast;
 
 namespace Weather_App.Data.Services.WeatherForecastService;
 
 public class WeatherForecastService : IWeatherForecastService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public WeatherForecastService(ApplicationDbContext context)
+    public WeatherForecastService(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<WeatherForecast>> GetWeatherForecasts()
+    public async Task<IEnumerable<WeatherForecastDto>> GetWeatherForecasts()
     {
         return await _context.WeatherForecast
-        .Include(w => w.Location)
-        .Include(w => w.Account)
-        .Include(w => w.ForecastDays)
-        .Include(w => w.Current).ThenInclude(w => w.Condition)
-        .OrderByDescending(w => w.Id)
-        .ToListAsync();
+            .AsNoTracking()
+            .OrderByDescending(w => w.Id)
+            .ProjectTo<WeatherForecastDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<WeatherForecast>> GetWeatherForecasts(string accountId)
+    public async Task<IEnumerable<WeatherForecastDto>> GetWeatherForecasts(string accountId)
     {
         return await _context.WeatherForecast
-        .Include(w => w.Location)
-        .Include(w => w.Account).Where(a => a.AccountId == accountId)
-        .Include(w => w.ForecastDays).ThenInclude(w => w.ForecastHours).ThenInclude(w => w.Condition)
-        .Include(w => w.Current).ThenInclude(w => w.Condition)
-        .OrderByDescending(w => w.Id)
-        .ToListAsync();
+            .AsNoTracking()
+            .Where(a => a.AccountId == accountId)
+            .OrderByDescending(w => w.Id)
+            .ProjectTo<WeatherForecastDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
     }
 }

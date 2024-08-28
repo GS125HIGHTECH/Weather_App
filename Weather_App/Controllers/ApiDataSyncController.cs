@@ -6,7 +6,6 @@ using Weather_App.Models.Entities;
 
 namespace Weather_App.Controllers;
 
-[Authorize(Roles = Roles.Administrator)]
 public class ApiDataSyncController : Controller
 {
     private readonly IExternalApiSyncService<long, WeatherCurrent, WeatherCurrent> _weatherCurrentExternalApiSyncService;
@@ -20,6 +19,7 @@ public class ApiDataSyncController : Controller
         _weatherForecastExternalApiSyncService = weatherForecastExternalApiSyncService;
     }
 
+    [Authorize(Roles = Roles.Administrator)]
     public async Task<IActionResult> SyncWeatherCurrent(string param)
     {
         await _weatherCurrentExternalApiSyncService.BeginRequest(param);
@@ -27,6 +27,7 @@ public class ApiDataSyncController : Controller
         return RedirectToInfoIndex();
     }
 
+    [Authorize]
     public async Task<IActionResult> SyncWeatherForecast(string param)
     {
         await _weatherForecastExternalApiSyncService.BeginRequest(param);
