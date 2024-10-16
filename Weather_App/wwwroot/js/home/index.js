@@ -63,7 +63,9 @@ function initMap() {
     });
 
     marker.addListener("dragend", () => {
-        updateLatLng(marker.getPosition());
+        const position = marker.getPosition();
+        updateLatLng(position);
+        getAddress(position);
     });
 
     map.addListener("click", (event) => {
