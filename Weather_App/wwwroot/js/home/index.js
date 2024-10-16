@@ -1,6 +1,7 @@
 ﻿let map;
 let marker;
 let autocomplete;
+let geocoder; 
 
 function initMap() {
     const southWest = new google.maps.LatLng(-85, -180);
@@ -37,6 +38,8 @@ function initMap() {
         draggable: true,
     });
 
+    geocoder = new google.maps.Geocoder();
+
     autocomplete = new google.maps.places.Autocomplete(document.getElementById("autocomplete"));
     autocomplete.bindTo("bounds", map);
 
@@ -44,7 +47,7 @@ function initMap() {
         const place = autocomplete.getPlace();
 
         if (!place.geometry || !place.geometry.location) {
-            alert("No details available for the input: '" + place.name + "'");
+            showModal("No details available for the input: '" + place.name + "'");
             return;
         }
 
@@ -60,13 +63,22 @@ function initMap() {
     });
 
     marker.addListener("dragend", () => {
-        updateLatLng(marker.getPosition());
+        const position = marker.getPosition();
+        updateLatLng(position);
+        getAddress(position);
     });
 
     map.addListener("click", (event) => {
         marker.setPosition(event.latLng);
         updateLatLng(event.latLng);
+        getAddress(event.latLng);
     });
+}
+
+function showModal(message) {
+    const modal = new bootstrap.Modal(document.getElementById('alertModal'));
+    document.getElementById('alertMessage').textContent = message;
+    modal.show();
 }
 
 function updateLatLng(location) {
@@ -82,8 +94,34 @@ function submitForm() {
         document.getElementById("paramField").value = param;
         document.getElementById("weatherForm").submit();
     } else {
-        alert("Please select a location on the map.");
+        showModal("Please select a location on the map.");
     }
 }
 
-window.onload = initMap;
+function getAddress(latLng) {
+    geocoder.geocode({ location: latLng }, (results, status) => {
+        if (status === "OK" && results[0]) {
+            const addressComponents = results[0].address_components;
+            let city = "";
+            let country = "";
+
+            for (let i = 0; i < addressComponents.length; i++) {
+                const component = addressComponents[i];
+                if (component.types.includes("locality")) {
+                    city = component.long_name;
+                }
+                if (component.types.includes("country")) {
+                    country = component.long_name;
+                }
+            }
+
+            if (city && country) {
+                document.getElementById("autocomplete").value = `${city}, ${country}`;
+            } else {
+                document.getElementById("autocomplete").value = results[0].formatted_address;
+            }
+        } else {
+            showModal("Unable to retrieve address for the selected location.");
+        }
+    });
+}
