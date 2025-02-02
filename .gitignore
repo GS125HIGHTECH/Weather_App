@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /WeatherApp.Blazor/WeatherApp.Blazor/appsettings.Development.json
 /WeatherApp.BlazorWeb
 /WeatherApp/appsettings.json
+/WeatherApp/appsettings.Development.json
