@@ -1,0 +1,87 @@
+﻿@inherits LayoutComponentBase
+
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+@using MudBlazor
+
+<MudThemeProvider IsDarkMode="isDarkMode" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="(() => ToggleDrawer())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Weather App</MudText>
+        <MudSpacer />
+        <MudToggleIconButton @bind-Toggled="isDarkMode" Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="Color.Inherit" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="isDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0">
+        <MudNavMenu>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home" Match="NavLinkMatch.All">Home</MudNavLink>
+            <MudNavLink Href="weatherForecast" Icon="@Icons.Material.Filled.Cloud">Weather Forecast</MudNavLink>
+            <MudNavLink Href="weatherCurrent" Icon="@Icons.Material.Filled.WbSunny">Weather Current</MudNavLink>
+
+            <AuthorizeView>
+                <Authorized>
+                    <MudNavLink Href="Account/Manage" Icon="@Icons.Material.Filled.AccountCircle">@context.User.Identity?.Name</MudNavLink>
+
+                    <form action="Account/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <MudButton Color="Color.Primary" Variant="Variant.Text" ButtonType="ButtonType.Submit">
+                            <MudIcon Icon="@Icons.Material.Filled.Logout" /> Logout
+                        </MudButton>
+                    </form>
+                </Authorized>
+                <NotAuthorized>
+                    <MudNavLink Href="Account/Register" Icon="@Icons.Material.Filled.PersonAdd">Register</MudNavLink>
+                    <MudNavLink Href="Account/Login" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4 px-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool isDrawerOpen = true;
+    bool isDarkMode = false;
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    void ToggleDrawer()
+    {
+        isDrawerOpen = !isDrawerOpen;
+        StateHasChanged();
+    }
+
+    void ToggleDarkMode()
+    {
+        isDarkMode = !isDarkMode;
+        StateHasChanged();
+    }
+}

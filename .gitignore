@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Weather_App/appsettings.json
+/WeatherApp.Blazor/WeatherApp.Blazor/appsettings.json
+/WeatherApp.Blazor/WeatherApp.Blazor/appsettings.Development.json
+/WeatherApp.BlazorWeb

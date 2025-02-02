@@ -1,0 +1,26 @@
+﻿@page "/weatherForecast"
+
+@using WeatherApp.Blazor.Data.Services.WeatherForecastService
+@using WeatherApp.Blazor.Client.Pages.WeatherForecast
+@using WeatherApp.Shared.Models.Dto.WeatherForecast
+
+@inject IWeatherForecastService WeatherForecastService
+@inject NavigationManager Navigation
+
+@if (weatherForecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+     <WeatherForecast weatherForecasts="weatherForecasts"></WeatherForecast>
+}
+
+@code {
+    private IEnumerable<WeatherForecastBlazorDto> weatherForecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        weatherForecasts = await WeatherForecastService.GetWeatherForecasts();
+    }
+}
