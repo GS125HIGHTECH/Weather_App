@@ -1,4 +1,4 @@
-﻿namespace WeatherApp.Consts;
+﻿namespace WeatherApp.Shared.Consts;
 
 public static class Entities
 {
