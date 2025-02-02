@@ -1,5 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
+@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
 @using MudBlazor
 
 <MudThemeProvider IsDarkMode="isDarkMode" />
@@ -27,7 +31,7 @@
                     <form action="Account/Logout" method="post">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <MudButton Color="Color.Primary" Variant="Variant.Text" Type="Submit">
+                        <MudButton Color="Color.Primary" Variant="Variant.Text" ButtonType="ButtonType.Submit">
                             <MudIcon Icon="@Icons.Material.Filled.Logout" /> Logout
                         </MudButton>
                     </form>
@@ -48,8 +52,6 @@
 </MudLayout>
 
 @code {
-    [Inject] NavigationManager NavigationManager { get; set; }
-
     bool isDrawerOpen = true;
     bool isDarkMode = false;
     private string? currentUrl;
