@@ -1,0 +1,28 @@
+﻿@page "/weatherCurrent"
+@attribute [StreamRendering]
+
+@using WeatherApp.Blazor.Data.Services.WeatherCurrentService
+@using WeatherApp.Blazor.Models.Entities
+@using WeatherApp.Blazor.Client.Pages.WeatherCurrent
+@using WeatherApp.Shared.Models.Dto.WeatherCurrent
+
+@inject IWeatherCurrentService WeatherCurrentService
+@inject NavigationManager Navigation
+
+@if (weatherCurrents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <WeatherCurrent weatherCurrents="weatherCurrents"></WeatherCurrent>
+}
+
+@code {
+    private IEnumerable<WeatherCurrentBlazorDto> weatherCurrents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        weatherCurrents = await WeatherCurrentService.GetWeatherCurrents();
+    }
+}
