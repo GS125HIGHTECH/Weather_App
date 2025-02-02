@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using WeatherApp.Consts;
+using WeatherApp.Shared.Consts;
 
 namespace WeatherApp.Areas.Identity.Pages.Account.Manage;
 

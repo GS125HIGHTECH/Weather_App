@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using WeatherApp.Consts;
 using WeatherApp.Data.Repositories.Base;
 using WeatherApp.Data.Repositories.Custom;
+using WeatherApp.Shared.Consts;
 using WeatherApp.Shared.Models.Entities;
 using WeatherApp.Shared.Models.ExternalApi.WeatherForecast;
 

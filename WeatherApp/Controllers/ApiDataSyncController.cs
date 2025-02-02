@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WeatherApp.Consts;
 using WeatherApp.Data.Services.ExternalApisService;
+using WeatherApp.Shared.Consts;
 using WeatherApp.Shared.Models.Entities;
 
 namespace WeatherApp.Controllers;
