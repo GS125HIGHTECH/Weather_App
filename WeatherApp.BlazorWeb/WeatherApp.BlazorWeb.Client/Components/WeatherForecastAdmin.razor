@@ -1,47 +1,33 @@
 ﻿@using WeatherApp.Shared.Models.Dto.WeatherForecast
 
-<div class="container">
-    @if (weatherForecasts == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Location</th>
-                    <th>Country</th>
-                    <th>Current Condition</th>
-                    <th>Forecast</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in weatherForecasts)
-                {
-                    <tr>
-                        <td>@item.AccountEmail</td>
-                        <td>@item.Location?.Name</td>
-                        <td>@item.Location?.Country</td>
-                        <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
-                        <td>
-                            <ul>
-                                @if (item.ForecastDays != null)
-                                {
-                                    @foreach (var day in item.ForecastDays)
-                                    {
-                                        <li>@day.Date!.Value.Date.ToShortDateString()</li>
-                                    }
-                                }
-                            </ul>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</div>
+<MudContainer Class="mt-4">
+    <MudTable Items="weatherForecasts" Hover="true" Bordered="true">
+        <HeaderContent>
+            <MudTh>Email</MudTh>
+            <MudTh>Location</MudTh>
+            <MudTh>Country</MudTh>
+            <MudTh>Current Condition</MudTh>
+            <MudTh>Forecast</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Email">@context.AccountEmail</MudTd>
+            <MudTd DataLabel="Location">@context.Location?.Name</MudTd>
+            <MudTd DataLabel="Country">@context.Location?.Country</MudTd>
+            <MudTd DataLabel="Current Condition">@context.Current?.Condition?.Text @context.Current?.TemperatureCelsius&deg;C</MudTd>
+            <MudTd DataLabel="Forecast">
+                <MudList T="ForecastDayDto">
+                    @if (context.ForecastDays != null)
+                    {
+                        @foreach (var day in context.ForecastDays)
+                        {
+                            <MudListItem>@day.Date!.Value.Date.ToShortDateString()</MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
 
 @code {
     [Parameter]
