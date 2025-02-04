@@ -5,6 +5,7 @@ namespace WeatherApp.Shared.Models.Dto.WeatherCurrent;
 public class WeatherCurrentBlazorDto : EntityBase<long>
 {
     public string? AccountId { get; set; }
+    public string? AccountEmail { get; set; }
     public long LocationId { get; set; }
     public virtual LocationDto? Location { get; set; }
     public long CurrentId { get; set; }
