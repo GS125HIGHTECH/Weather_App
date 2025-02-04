@@ -1,0 +1,29 @@
+﻿@page "/manage/weatherForecast"
+@attribute [StreamRendering]
+
+@using WeatherApp.Shared.Data.Services.WeatherForecastService
+@using WeatherApp.Shared.Models.Dto.WeatherForecast
+@using WeatherApp.BlazorWeb.Client.Components
+
+@inject IWeatherForecastService WeatherForecastService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (weatherForecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <WeatherForecastAdmin weatherForecasts="weatherForecasts"></WeatherForecastAdmin>
+    </AuthorizeView>
+}
+
+@code {
+    private IEnumerable<WeatherForecastBlazorDto> weatherForecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        weatherForecasts = await WeatherForecastService.GetWeatherForecasts();
+    }
+}

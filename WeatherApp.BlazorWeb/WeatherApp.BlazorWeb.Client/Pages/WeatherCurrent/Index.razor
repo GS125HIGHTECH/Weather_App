@@ -1,0 +1,47 @@
+﻿@page "/weatherCurrent"
+@attribute [StreamRendering]
+
+@using WeatherApp.BlazorWeb.Client.Pages.WeatherCurrent
+@using WeatherApp.Shared.Data.Services.WeatherCurrentService
+@using WeatherApp.Shared.Models.Dto.WeatherCurrent
+@using WeatherApp.BlazorWeb.Client.Components
+@using System.Security.Claims
+
+@inject IWeatherCurrentService WeatherCurrentService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (weatherCurrents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <WeatherCurrent weatherCurrents="weatherCurrents"></WeatherCurrent>
+    </AuthorizeView>
+}
+
+@code {
+    private string? accountId;
+    private IEnumerable<WeatherCurrentBlazorDto> weatherCurrents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            accountId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (accountId != null)
+            {
+                weatherCurrents = await WeatherCurrentService.GetWeatherCurrents(accountId);
+            }
+        }
+        else
+        {
+            weatherCurrents = new List<WeatherCurrentBlazorDto>();
+        }
+    }
+}

@@ -1,0 +1,90 @@
+﻿@using WeatherApp.Shared.Models.Dto.WeatherCurrent
+
+@rendermode InteractiveAuto
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    @foreach (var locationGroup in weatherCurrents.GroupBy(w => w.Location?.Name))
+    {
+        <MudCard Class="mb-4">
+            <MudCardHeader Class="cursor-pointer" @onclick="() => ToggleLocation(locationGroup.Key!)">
+                <MudText Typo="Typo.h5">
+                    @locationGroup.Key
+                    <MudIcon Icon="@(expandedLocations.Contains(locationGroup.Key!) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" Class="float-right" />
+                </MudText>
+            </MudCardHeader>
+            <MudCollapse Expanded="@expandedLocations.Contains(locationGroup.Key!)">
+                <MudCardContent>
+                    @foreach (var weather in locationGroup)
+                    {
+                        <MudCard Class="mb-3">
+                            <MudCardHeader Class="cursor-pointer" @onclick="() => ToggleWeather(weather.Id)">
+                                <MudGrid>
+                                    <MudItem xs="12" sm="6">
+                                        <MudText>@weather.Location?.Localtime?.ToShortDateString() @weather.Location?.Localtime?.ToShortTimeString()</MudText>
+                                    </MudItem>
+                                    <MudItem xs="12" sm="6">
+                                        <img src="@weather.Current?.Condition?.Icon" alt="@weather.Current?.Condition?.Text" class="inline-block mr-2" />
+                                        @weather.Current?.TemperatureCelsius&deg;C
+                                    </MudItem>
+                                </MudGrid>
+                                <MudText Typo="Typo.caption">UV Index: @weather.Current?.UVIndex <br />Humidity: @weather.Current?.Humidity%</MudText>
+                                <MudIcon Icon="@(expandedWeatherIds.Contains(weather.Id) ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" />
+                            </MudCardHeader>
+                            <MudCollapse Expanded="@expandedWeatherIds.Contains(weather.Id)">
+                                <MudCardContent>
+                                    <MudText>Country: @weather.Location?.Country</MudText>
+
+                                    <MudGrid>
+                                        <MudItem xs="12" sm="6">
+                                            <MudText>Temperature: @weather.Current?.TemperatureCelsius&deg;C / @weather.Current?.TemperatureFahrenheit&deg;F</MudText>
+                                        </MudItem>
+                                        <MudItem xs="12" sm="6">
+                                            <MudText>Feels Like: @weather.Current?.FeelsLikeTemperatureCelsius&deg;C / @weather.Current?.FeelsLikeTemperatureFahrenheit&deg;F</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+
+                                    <MudText>Wind Speed: @weather.Current?.WindKPH km/h / @weather.Current?.WindMPH mph</MudText>
+                                    <MudText>Pressure: @weather.Current?.PressureMilibars hPa</MudText>
+                                    <MudText>Visibility: @weather.Current?.VisibilityKilometers km</MudText>
+                                </MudCardContent>
+                            </MudCollapse>
+                        </MudCard>
+                    }
+                </MudCardContent>
+            </MudCollapse>
+        </MudCard>
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherCurrentBlazorDto> weatherCurrents { get; set; }
+
+    private HashSet<string> expandedLocations = new HashSet<string>();
+    private HashSet<long> expandedWeatherIds = new HashSet<long>();
+
+    protected override void OnInitialized()
+    {
+        expandedLocations = weatherCurrents
+            .Select(w => w.Location?.Name)
+            .Where(name => !string.IsNullOrEmpty(name))
+            .Cast<string>()
+            .ToHashSet();
+    }
+
+    private void ToggleLocation(string locationName)
+    {
+        if (!expandedLocations.Add(locationName))
+        {
+            expandedLocations.Remove(locationName);
+        }
+    }
+
+    private void ToggleWeather(long weatherId)
+    {
+        if (!expandedWeatherIds.Add(weatherId))
+        {
+            expandedWeatherIds.Remove(weatherId);
+        }
+    }
+}
