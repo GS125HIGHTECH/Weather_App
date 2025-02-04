@@ -1,0 +1,39 @@
+﻿@using WeatherApp.Shared.Models.Dto.WeatherCurrent
+
+<div class="container">
+    @if (weatherCurrents == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Country</th>
+                    <th>Local time</th>
+                    <th>Current Condition</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in weatherCurrents)
+                {
+                    <tr>
+                        <td>@item.AccountEmail</td>
+                        <td>@item.Location?.Name</td>
+                        <td>@item.Location?.Country</td>
+                        <td>@item.Location?.Localtime</td>
+                        <td>@item.Current?.Condition?.Text @item.Current?.TemperatureCelsius&deg;C</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherCurrentBlazorDto> weatherCurrents { get; set; }
+}
