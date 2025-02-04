@@ -1,0 +1,30 @@
+﻿@page "/manage/weatherCurrent"
+@attribute [StreamRendering]
+
+@using WeatherApp.Shared.Data.Services.WeatherCurrentService
+@using WeatherApp.Shared.Models.Dto.WeatherCurrent
+@using WeatherApp.BlazorWeb.Client.Components
+@using System.Security.Claims
+
+@inject IWeatherCurrentService WeatherCurrentService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (weatherCurrents == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <WeatherCurrentAdmin weatherCurrents="weatherCurrents"></WeatherCurrentAdmin>
+    </AuthorizeView>
+}
+
+@code {
+    private IEnumerable<WeatherCurrentBlazorDto> weatherCurrents;
+
+    protected override async Task OnInitializedAsync()
+    {
+        weatherCurrents = await WeatherCurrentService.GetWeatherCurrents();
+    }
+}

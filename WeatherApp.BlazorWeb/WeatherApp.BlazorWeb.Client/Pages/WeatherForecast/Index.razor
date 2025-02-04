@@ -1,0 +1,47 @@
+﻿@page "/weatherForecast"
+@attribute [StreamRendering]
+
+@using WeatherApp.BlazorWeb.Client.Pages.WeatherForecast
+@using WeatherApp.Shared.Data.Services.WeatherForecastService
+@using WeatherApp.Shared.Models.Dto.WeatherForecast
+@using WeatherApp.BlazorWeb.Client.Components
+@using System.Security.Claims
+
+@inject IWeatherForecastService WeatherForecastService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (weatherForecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <AuthorizeView>
+        <WeatherForecast weatherForecasts="weatherForecasts"></WeatherForecast>
+    </AuthorizeView>
+}
+
+@code {
+    private string? accountId;
+    private IEnumerable<WeatherForecastBlazorDto> weatherForecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            accountId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (accountId != null)
+            {
+                weatherForecasts = await WeatherForecastService.GetWeatherForecasts(accountId);
+            }
+        }
+        else
+        {
+            weatherForecasts = new List<WeatherForecastBlazorDto>();
+        }
+    }
+}
